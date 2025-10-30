@@ -16,7 +16,6 @@ telefono_prellenado = params.get('telefono', [''])
 @st.dialog("Alerta debes seleccionar un rol")
 def alerta1():
     st.write(f"Debes seleccionar un rol para continuar")
-    #reason = st.text_input("Because...")
 
 def buscar_usuario(telefono):
     resultados = notion.databases.query(
@@ -34,7 +33,6 @@ def actualizar_usuario(page_id, datos, cambios):
         page_id=page_id,
         properties=datos
     )
-    # Incrementar el contador de cambios
     notion.pages.update(
         page_id=page_id,
         properties={"Cambios": {"number": cambios + 1}}
@@ -47,7 +45,6 @@ def crear_usuario(datos):
     )
 
 def datos_a_notion(nombre, telefono, rol, iglesia, ciudad, cambios):
-    # Adapta los nombres de propiedad según tu tabla
     return {
         "Nombre": {"title": [{"text": {"content": nombre}}]},
         "Telefono": {"phone_number": telefono},
@@ -58,7 +55,6 @@ def datos_a_notion(nombre, telefono, rol, iglesia, ciudad, cambios):
     }
 
 ubusa = buscar_usuario(telefono_prellenado)
-#f"ubusa = {ubusa}"
 if ubusa != None:
     #f"ubusa properties = {ubusa['properties']}"
     rolbd = ubusa['properties']['Rol']['select']['name']
@@ -74,14 +70,6 @@ else:
     iglesiabd = None
     telefonobd = 0
     nombrebd = None
-
-#
-#f"Rol = {rolbd}"
-#f"Ciudad = {ciudadbd}"
-#f"Cambios = {cambiosbd}"
-#f"Iglesia = {iglesiabd}"
-#f"Telefono = {telefonobd}"
-#f"Nombre = {nombrebd}"
 
 st.header("Bienvenido al registro de la Regional 2025")
 
@@ -99,22 +87,17 @@ with st.form('Registro 1'):
     iglesia = st.text_input("Iglesia :", value= iglesiabd, placeholder='Nombre de la iglesia')
     ciudad = st.text_input("Ciudad :", value= ciudadbd, placeholder='Nombre de la Ciudad')
 
-    st.write("")  # Espacio visual
-    # submit = st.button("Enviar")
+    st.write("")  
     submitted = st.form_submit_button("Enviar")
 
     if submitted:
         
         datos = datos_a_notion(nombre, telefono, rol, iglesia, ciudad, cambiosbd+1)
-        #f"datos = {datos}"
-        #f" ---> {datos["Rol"]['select']['name']}"
         if datos["Rol"]['select']['name'] != None:
             usuario_existente = buscar_usuario(telefono)
             if usuario_existente:
                 propiedades = usuario_existente["properties"]
                 cambios_actuales = propiedades.get("Cambios", {}).get("number", 0)
-
-                # Verificar cambios (adapta nombres de propiedad según tu tabla)
                 cambios = sum([
                     propiedades.get("Nombre", {}).get("title", [{}])[0].get("text", {}).get("content", "") != nombre,
                     propiedades.get("Iglesia", {}).get("rich_text", [{}])[0].get("text", {}).get("content", "") != iglesia,
@@ -132,7 +115,7 @@ with st.form('Registro 1'):
                 crear_usuario(datos)
                 st.success("¡Registro exitoso!")
         else:
-            #st.toast('Alerta - Debes seleccionar un rol ')
             alerta1()
+
 
 '---'
