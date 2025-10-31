@@ -71,7 +71,7 @@ else:
     telefonobd = 0
     nombrebd = None
 
-st.header("Bienvenido al registro de la Regional 2025")
+st.header("Bienvenido al módulo de registro de la Regional 2025")
 
 with st.form('Registro 1'):
     st.subheader("Elije tu rol en esta regional")
@@ -119,3 +119,4 @@ with st.form('Registro 1'):
 
 
 '---'
+
